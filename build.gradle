@@ -6,6 +6,7 @@ buildscript {
 		jacocoVersion = '0.8.13'
 		pitestVersion = '1.19.0-rc.1'
         lombokVersion = '1.18.38'
+        javaVersion = JavaVersion.VERSION_17
 	}
 }
 
@@ -31,6 +32,19 @@ sonar {
         property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacocoMergedReport/jacocoMergedReport.xml"
         property "sonar.pitest.reportPaths", "build/reports/pitest/mutations.xml"
         property "sonar.externalIssuesReportPaths", "build/issues.json"
+    }
+}
+
+allprojects {
+    apply plugin: 'java'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    repositories {
+        mavenCentral()
     }
 }
 
