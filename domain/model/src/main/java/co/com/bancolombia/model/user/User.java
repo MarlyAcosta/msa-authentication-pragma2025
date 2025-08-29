@@ -1,7 +1,7 @@
 package co.com.bancolombia.model.user;
 import lombok.Builder;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +17,7 @@ public class User {
     private Integer id;
     private String name;
     private String lastname;
-    private LocalDate birthday;
+    private Date birthdate;
     private String address;
     private String phone;
     private String email;

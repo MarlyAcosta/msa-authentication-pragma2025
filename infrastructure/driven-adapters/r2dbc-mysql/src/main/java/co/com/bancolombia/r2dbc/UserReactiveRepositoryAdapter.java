@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserReactiveRepositoryAdapter
-        extends ReactiveAdapterOperations<User, UserEntity, String, UserReactiveRepository> implements UserRepository{
+        extends ReactiveAdapterOperations<User, UserEntity, String, UserReactiveRepository> implements UserRepository {
     public UserReactiveRepositoryAdapter(UserReactiveRepository repository, ObjectMapper mapper) {
         super(repository, mapper, entity -> mapper.map(entity, User.class));
     }
