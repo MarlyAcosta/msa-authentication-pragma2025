@@ -1,8 +1,9 @@
 package co.com.bancolombia.api;
 
 import co.com.bancolombia.api.dto.RegisterUserDTO;
-import co.com.bancolombia.api.dto.ResponseErrorDTO;
 import co.com.bancolombia.api.mapper.UserDTOMapper;
+import co.com.bancolombia.api.utils.ResponseMessages;
+import co.com.bancolombia.api.utils.ValidationUtils;
 import co.com.bancolombia.usecase.registeruser.RegisterUserUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,30 +24,18 @@ public class Handler {
         private final UserDTOMapper userDTOMapper;
 
         public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
-                log.info("Iniciando creación de usuario. Path: {}, QueryParams: {} body: {}", serverRequest.path(),
-                                serverRequest.queryParams(), serverRequest.bodyToMono(RegisterUserDTO.class));
+                log.info("Iniciando creación de usuario. Path: {}, QueryParams: {}", serverRequest.path(),
+                                serverRequest.queryParams());
                 return serverRequest.bodyToMono(RegisterUserDTO.class)
-                                .doOnNext(dto -> log.info("Datos recibidos para creación de usuario: {}", dto))
+                                .flatMap(ValidationUtils::validate)
                                 .map(userDTOMapper::toModel)
                                 .flatMap(registerUserUseCase::register)
                                 .flatMap(user -> Mono.just(
-                                                userDTOMapper.toResponse(user, "Usuario registrado exitosamente")))
+                                                userDTOMapper.toResponse(user, ResponseMessages.USER_CREATED)))
                                 .flatMap(userResponse -> ServerResponse.status(HttpStatus.CREATED)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .bodyValue(userResponse))
                                 .doOnError(e -> log.error("Error durante la creación de usuario: {}", e.getMessage(),
-                                                e))
-                                .onErrorResume(this::handleError);
-        }
-
-        public Mono<ServerResponse> handleError(Throwable e) {
-                if (e instanceof IllegalArgumentException) {
-                        return ServerResponse.badRequest()
-                                        .contentType(MediaType.APPLICATION_JSON)
-                                        .bodyValue(new ResponseErrorDTO(e.getMessage()));
-                }
-                return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue(new ResponseErrorDTO("Ocurrió un error inesperado"));
+                                                e));
         }
 }

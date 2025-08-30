@@ -1,4 +1,4 @@
-package co.com.bancolombia.usecase.registeruser.exception;
+package co.com.bancolombia.model.user.exception;
 
 public class InvalidSalaryException extends RuntimeException {
     public InvalidSalaryException(Integer base_salary) {

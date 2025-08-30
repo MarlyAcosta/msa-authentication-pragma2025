@@ -34,6 +34,7 @@ public class RouterRest {
                     })) })
 
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
-        return route(POST(userPath.getUsers()), userHandler::listenSaveUser);
+        return route(POST(userPath.getUsers()), userHandler::listenSaveUser)
+                .filter(new GlobalErrorHandler());
     }
 }
