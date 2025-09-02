@@ -10,12 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @Component
+@Configuration
 @RequiredArgsConstructor
 @Slf4j
 public class Handler {
@@ -30,7 +32,7 @@ public class Handler {
                                 .flatMap(ValidationUtils::validate)
                                 .map(userDTOMapper::toModel)
                                 .flatMap(registerUserUseCase::register)
-                                .flatMap(user -> Mono.just(
+                                .flatMap(user -> Mono.justOrEmpty(
                                                 userDTOMapper.toResponse(user, ResponseMessages.USER_CREATED)))
                                 .flatMap(userResponse -> ServerResponse.status(HttpStatus.CREATED)
                                                 .contentType(MediaType.APPLICATION_JSON)

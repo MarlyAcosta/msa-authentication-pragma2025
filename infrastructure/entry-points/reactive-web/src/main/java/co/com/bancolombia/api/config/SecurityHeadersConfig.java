@@ -2,11 +2,13 @@ package co.com.bancolombia.api.config;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+@Configuration
 @Component
 public class SecurityHeadersConfig implements WebFilter {
 
